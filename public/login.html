@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apprecious — Sales Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f5f6fd;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff;
+      border: 1px solid #d0d4f0;
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(67,78,176,0.12);
+      text-align: center;
+    }
+    .logo {
+      height: 48px;
+      object-fit: contain;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #434eb0;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 32px;
+    }
+    .field {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      border: 1.5px solid #d0d4f0;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus {
+      border-color: #434eb0;
+      box-shadow: 0 0 0 3px rgba(67,78,176,0.10);
+    }
+    .error-msg {
+      background: #fff3f3;
+      border: 1px solid #f5c6c6;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #c62828;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    button {
+      width: 100%;
+      background: #434eb0;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+      box-shadow: 0 4px 12px rgba(67,78,176,0.30);
+    }
+    button:hover { background: #5560c4; }
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <img src="https://www.apprecious.com.my/cdn/shop/files/Apprecious_full_logo_prew.jpg?v=1728427519"
+         alt="Apprecious" class="logo" />
+    <h1>Sales Portal</h1>
+    <p class="subtitle">Sign in to access the Proposal Generator</p>
+
+    <form method="POST" action="/login">
+      <!-- Show error if ?error=1 -->
+      <div class="error-msg" id="errBox" style="display:none">
+        ⚠ Incorrect username or password. Please try again.
+      </div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required autofocus />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required />
+      </div>
+      <button type="submit">Sign In →</button>
+    </form>
+
+    <p class="footer-note">Apprecious · Internal Sales Tool</p>
+  </div>
+
+  <script>
+    // Show error message if redirected with ?error=1
+    if (new URLSearchParams(window.location.search).get('error') === '1') {
+      document.getElementById('errBox').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
