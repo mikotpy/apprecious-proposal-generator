@@ -430,6 +430,83 @@ textarea {
 }
 .btn-retry:hover { background: #b71c1c; }
 
+/* ── Slide Customisation ─────────────────────────── */
+.custom-section-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand-blue);
+  margin-bottom: 12px;
+}
+.occ-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 600px) { .occ-grid { grid-template-columns: 1fr; } }
+.check-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.check-opt input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; accent-color: var(--brand-blue); }
+.check-opt:has(input:checked) { border-color: var(--brand-blue); background: var(--brand-blue-lt); }
+.check-opt:hover { border-color: var(--brand-blue); }
+.check-icon { font-size: 18px; }
+.check-text { display: flex; flex-direction: column; gap: 1px; }
+.check-text strong { font-size: 12.5px; font-weight: 600; }
+.check-text small  { font-size: 11px; color: var(--text-hint); }
+.check-opt-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-sub);
+  cursor: pointer;
+  padding: 8px 0;
+}
+.check-opt-inline input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--brand-blue); }
+.slide-config-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 16px;
+  align-items: end;
+}
+@media (max-width: 600px) { .slide-config-row { grid-template-columns: 1fr 1fr; } }
+.slide-total-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-blue);
+  background: var(--brand-blue-lt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  white-space: nowrap;
+  text-align: center;
+  height: fit-content;
+}
+.slide-total-badge.over { color: #e53935; background: #fff3f3; border-color: #f5c6c6; }
+.custom-slide-card {
+  border: 1.5px solid var(--border);
+  border-left: 4px solid var(--brand-blue);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  margin-top: 14px;
+  background: var(--brand-blue-pale);
+}
+.custom-slide-card-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand-blue);
+  margin-bottom: 14px;
+  font-family: var(--font-display);
+}
+
 /* ── Footer ──────────────────────────────────────── */
 .site-footer {
   text-align: center;

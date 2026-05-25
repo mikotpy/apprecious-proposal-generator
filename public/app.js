@@ -201,6 +201,53 @@ document.getElementById('retryBtn')?.addEventListener('click', () => {
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
+// ── Slide customisation ────────────────────────────────────
+const websiteSlideCountEl = document.getElementById('websiteSlideCount');
+const customSlideCountEl  = document.getElementById('customSlideCount');
+const slideTotalBadge     = document.getElementById('slideTotalBadge');
+const customSlideCards    = document.getElementById('customSlideCards');
+
+function renderCustomSlideCards() {
+  const website = Math.max(0, parseInt(websiteSlideCountEl?.value) || 0);
+  const custom  = Math.max(0, parseInt(customSlideCountEl?.value)  || 0);
+  const total   = website + custom;
+
+  if (slideTotalBadge) {
+    slideTotalBadge.textContent = `${total} slide${total !== 1 ? 's' : ''} total${total > 7 ? ' · max 7!' : ''}`;
+    slideTotalBadge.classList.toggle('over', total > 7);
+  }
+
+  if (!customSlideCards) return;
+  customSlideCards.innerHTML = '';
+
+  const count = Math.min(custom, 7);
+  for (let i = 0; i < count; i++) {
+    const card = document.createElement('div');
+    card.className = 'custom-slide-card';
+    card.innerHTML = `
+      <div class="custom-slide-card-header">✏️ Custom Slide ${i + 1}</div>
+      <div class="form-grid" style="gap:12px">
+        <div class="field">
+          <label>Product Name</label>
+          <input type="text" name="custom_${i}_name" placeholder="e.g. Artisan Wellness Hamper" />
+        </div>
+        <div class="field">
+          <label>Gift Set Items <span class="optional">(one item per line)</span></label>
+          <textarea name="custom_${i}_items" rows="4" placeholder="Handwoven rattan basket&#10;Local raw honey 250g&#10;Batik drawstring pouch&#10;Seed paper greeting card"></textarea>
+        </div>
+        <label class="check-opt-inline">
+          <input type="checkbox" name="custom_${i}_noImage">
+          Leave image empty (I'll add it myself in Google Slides)
+        </label>
+      </div>`;
+    customSlideCards.appendChild(card);
+  }
+}
+
+websiteSlideCountEl?.addEventListener('input', renderCustomSlideCards);
+customSlideCountEl?.addEventListener('input', renderCustomSlideCards);
+renderCustomSlideCards();
+
 // ── Init ───────────────────────────────────────────────────
 updateBudgetPreview();
 

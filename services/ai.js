@@ -11,18 +11,20 @@ function getClient() {
   return _client;
 }
 
-async function generateSlideContent(leadData, products) {
+async function generateSlideContent(leadData, products, options = {}) {
   const {
     clientName, company, picPosition, eventPurpose,
     budgetPerSet, quantity, deliveryDeadline, clientBrief,
   } = leadData;
 
+  const selectedOccasions = options.selectedOccasions || ['employee', 'client', 'festive', 'conference'];
+
   const productsContext = products.map((p, i) => `
-PRODUCT ${i + 1}: ${p.title}
+PRODUCT ${i + 1}: ${p.title}${p.isCustom ? ' [CUSTOM — items provided by sales team]' : ''}
 Price: RM${p.price}/set${p.isOnSale ? ` (was RM${p.comparePrice})` : ''}
-URL: ${p.url}
-Description: ${p.description.slice(0, 350)}${p.description.length > 350 ? '...' : ''}
-${p.bulletItems.length > 0 ? `Items/Features:\n${p.bulletItems.slice(0, 8).map(b => `  - ${b}`).join('\n')}` : ''}
+${p.isCustom ? '' : `URL: ${p.url}`}
+${p.isCustom ? `Items provided:\n${p.bulletItems.map(b => `  - ${b}`).join('\n')}` : `Description: ${p.description.slice(0, 350)}${p.description.length > 350 ? '...' : ''}
+${p.bulletItems.length > 0 ? `Items/Features:\n${p.bulletItems.slice(0, 8).map(b => `  - ${b}`).join('\n')}` : ''}`}
 `).join('\n---');
 
   const system = `You are a senior proposal writer at Apprecious, Malaysia's leading sustainable gifting brand.
@@ -53,26 +55,29 @@ ${productsContext}
   },
   "careProgrammeSlide": {
     "occasions": [
-      {
+      ${selectedOccasions.includes('employee') ? `{
         "title": "Internal Employee Appreciation",
         "occasions": "Name 2–3 SPECIFIC upcoming occasions for ${company} employees based on their industry — e.g. if they are a bank: Annual Performance Awards Dinner Q4 2026, Banker's Day, new branch opening staff gifts. If exhibition company: post-event crew appreciation, project milestone celebration. Make it sound like you know their internal calendar.",
         "why": "→ One sentence showing exactly why Apprecious gifts fit ${company}'s employee culture — reference their industry or ESG positioning specifically"
-      },
-      {
+      }` : ''}
+      ${selectedOccasions.includes('employee') && selectedOccasions.length > 1 ? ',' : ''}
+      ${selectedOccasions.includes('client') ? `{
         "title": "Client Retention & VIP Gifting",
         "occasions": "Name 2–3 SPECIFIC client-facing touchpoints for ${company}'s industry — e.g. for exhibition company: exhibitor welcome kits, post-event thank-you for top exhibitors, VIP delegate gifts at flagship events like MIHAS, MREPC, ARCHIDEX or similar Malaysian trade shows their clients attend. Sound informed.",
         "why": "→ One sentence on how sustainable gifting strengthens ${company}'s client relationships in their specific sector"
-      },
-      {
+      }` : ''}
+      ${selectedOccasions.includes('client') && selectedOccasions.indexOf('client') < selectedOccasions.length - 1 ? ',' : ''}
+      ${selectedOccasions.includes('festive') ? `{
         "title": "Festive & Cultural Events",
         "occasions": "Name the next 2–3 upcoming Malaysian festive gifting windows relevant to ${company}'s stakeholder mix — be specific with timing e.g. 'Hari Raya Aidiladha (June 2026)', 'National Day / Merdeka (Aug 2026)', 'Deepavali (Oct 2026)', 'Chinese New Year (Jan 2027)'. Pick the ones most relevant to their audience.",
         "why": "→ One sentence tying ${company}'s brand values to Malaysian cultural gifting — mention batik/heritage angle if relevant"
-      },
-      {
+      }` : ''}
+      ${selectedOccasions.includes('festive') && selectedOccasions.indexOf('festive') < selectedOccasions.length - 1 ? ',' : ''}
+      ${selectedOccasions.includes('conference') ? `{
         "title": "Conferences & Corporate Events",
         "occasions": "Name 2–3 REAL upcoming industry events, trade shows, AGMs or summits that ${company} is likely attending or hosting in 2026–2027 — based on their industry. For exhibition companies: MACEOS events, trade exhibitions they manage. For banks: investor days, ESG summits. For tech: tech conferences. Sound like you've done research.",
         "why": "→ One sentence on how Apprecious eco merch becomes a brand statement for ${company} at these specific events"
-      }
+      }` : ''}
     ]
   },
   "objectiveSlide": {
@@ -94,7 +99,9 @@ ${productsContext}
 
 Rules:
 - Generate productSlides for ALL ${products.length} products (indices 0–${products.length - 1})
-- giftSetItems: list ONLY the physical items in the gift set from the product description (5–8 items). Do NOT include "Product Materials", "Impact Story Card", "Brand Logo", or any placeholder/instruction text — these are separate blank fields on the slide
+- For CUSTOM products: use the provided items as giftSetItems exactly as given — do not invent new items
+- For WEBSITE products: list ONLY the physical items in the gift set from the product description (5–8 items)
+- Do NOT include "Product Materials", "Impact Story Card", "Brand Logo" in giftSetItems — these are separate blank fields on the slide
 - occasionTag: pick the 1–2 best occasion fits from: Staff Appreciation, Client Retention, Festive, New Joiner, Conference, VIP Gifting, Merdeka
 - Be specific to ${company}'s industry — avoid generic copy
 - Product Materials, Impact Story Card, Brand Logo are left blank for sales team to fill in manually`;

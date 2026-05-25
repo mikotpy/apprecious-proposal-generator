@@ -126,6 +126,63 @@
         </div>
       </section>
 
+      <!-- Slide Customisation -->
+      <section class="card">
+        <div class="card-label">
+          <span class="step-pill opt">opt</span>
+          Customise Your Slides
+        </div>
+
+        <!-- Slide 2: Occasions filter -->
+        <div class="custom-section-label">Slide 2 · Select which occasions to include in the Corporate Care Programme:</div>
+        <div class="occ-grid">
+          <label class="check-opt">
+            <input type="checkbox" name="occ_employee" checked>
+            <span class="check-icon">👥</span>
+            <span class="check-text"><strong>Employee Appreciation</strong><small>Year-end gala, milestones, new joiners</small></span>
+          </label>
+          <label class="check-opt">
+            <input type="checkbox" name="occ_client" checked>
+            <span class="check-icon">🤝</span>
+            <span class="check-text"><strong>Client Retention & VIP</strong><small>Partnership anniversaries, touchpoints</small></span>
+          </label>
+          <label class="check-opt">
+            <input type="checkbox" name="occ_festive" checked>
+            <span class="check-icon">🎊</span>
+            <span class="check-text"><strong>Festive & Cultural Events</strong><small>Raya, CNY, Deepavali, Merdeka</small></span>
+          </label>
+          <label class="check-opt">
+            <input type="checkbox" name="occ_conference" checked>
+            <span class="check-icon">🏛</span>
+            <span class="check-text"><strong>Conferences & Events</strong><small>AGM, summits, trade shows</small></span>
+          </label>
+        </div>
+
+        <!-- Product slides config -->
+        <div class="custom-section-label" style="margin-top:28px">Product Slides · Configure your slide mix <span class="optional">(max 7 total)</span></div>
+        <div class="slide-config-row">
+          <div class="field">
+            <label for="websiteSlideCount">From website <span class="optional">(auto-filled)</span></label>
+            <input type="number" id="websiteSlideCount" name="websiteSlideCount" min="0" max="7" value="7" />
+            <div class="field-hint">Products fetched from apprecious.com.my</div>
+          </div>
+          <div class="field">
+            <label for="customSlideCount">Custom slides <span class="optional">(you fill in)</span></label>
+            <input type="number" id="customSlideCount" name="customSlideCount" min="0" max="7" value="0" />
+            <div class="field-hint">Provide your own product details</div>
+          </div>
+          <div class="slide-total-badge" id="slideTotalBadge">7 slides total</div>
+        </div>
+
+        <label class="check-opt-inline" style="margin-top:14px">
+          <input type="checkbox" name="websiteNoImage" id="websiteNoImage">
+          Leave images empty for website slides (I'll add my own images in Google Slides)
+        </label>
+
+        <!-- Custom slide cards rendered by JS -->
+        <div id="customSlideCards"></div>
+      </section>
+
       <!-- Client Brief -->
       <section class="card">
         <div class="card-label">

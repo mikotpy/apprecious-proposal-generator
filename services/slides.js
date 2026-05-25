@@ -392,17 +392,13 @@ function buildProductSlide(slideId, slide, index) {
 
   // Product image starts below the option label
   const imgTop = optLabelH + 40000;
-  if (slide.primaryImage) {
+  const skipImage = slide.noImage || slide.isCustom && !slide.primaryImage;
+  if (!skipImage && slide.primaryImage) {
     try {
       R.push(image(slideId, uid(`pd_img_${index}`), slide.primaryImage, 50000, imgTop, half - 100000, H - imgTop - 50000));
-    } catch { /* fall through to placeholder */ }
-  } else {
-    const phBg = uid(`pd_ph_${index}`);
-    R.push(rect(slideId, phBg, 100000, imgTop, half - 200000, H - imgTop - 400000));
-    R.push(fillRect(phBg, C.white));
-    tb(R, slideId, `pd_ph_txt_${index}`, 100000, H / 2, half - 200000, 300000,
-      'Product image', { size: 10, color: C.lightBorder, align: 'CENTER' });
+    } catch { /* fall through — leave blank */ }
   }
+  // If noImage or no image available: leave beige panel blank (sales team adds image in Google Slides)
 
   // Occasion tag (bottom of left panel)
   if (slide.occasionTag) {
