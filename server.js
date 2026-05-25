@@ -78,7 +78,11 @@ app.get('/logout', (req, res) => {
 app.use(requireAuth, express.static(path.join(__dirname, 'public')));
 
 // ── API routes (protected) ───────────────────────────────────
-app.use('/api', requireAuth, apiRouter);
+function requireAuthApi(req, res, next) {
+  if (req.session && req.session.authenticated) return next();
+  res.status(401).json({ success: false, error: 'Session expired. Please refresh the page and log in again.' });
+}
+app.use('/api', requireAuthApi, apiRouter);
 
 // ── SPA fallback ─────────────────────────────────────────────
 app.get('*', requireAuth, (_req, res) => {

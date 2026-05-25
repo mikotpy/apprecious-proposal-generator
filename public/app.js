@@ -157,6 +157,12 @@ form.addEventListener('submit', async (e) => {
     clearTimeout(step2Timer);
     clearTimeout(step3Timer);
 
+    // Session expired — redirect to login
+    if (res.status === 401) {
+      window.location.href = '/login';
+      return;
+    }
+
     const json = await res.json();
 
     if (!res.ok || !json.success) {
