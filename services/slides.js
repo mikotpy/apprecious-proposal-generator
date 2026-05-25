@@ -131,10 +131,13 @@ function tb(reqs, pageId, prefix, x, y, w, h, content, { size = 10, bold = false
   const style = { fontSize: pt(size), bold, italic, foregroundColor: { opaqueColor: { rgbColor: color } } };
   if (font) style.fontFamily = font;
   reqs.push(textBox(pageId, id, x, y, w, h));
-  reqs.push(text(id, content));
-  reqs.push(textStyle(id, style));
-  reqs.push(paraStyle(id, { alignment: align }));
   reqs.push(noOutline(id));
+  // Only insert text and styles if content is non-empty — empty strings cause API errors
+  if (content && content.trim().length > 0) {
+    reqs.push(text(id, content));
+    reqs.push(textStyle(id, style));
+    reqs.push(paraStyle(id, { alignment: align }));
+  }
   return id;
 }
 
@@ -489,7 +492,7 @@ function buildProductSlide(slideId, slide, index) {
   R.push(fillRect(foot, C.orange));
 
   tb(R, slideId, `pd_price_${index}`, rightX + M, H - 300000, TW * 0.55, 260000,
-    slide.price || (slide.actualPrice ? `RM${slide.actualPrice} / set` : ''),
+    slide.price || (slide.actualPrice ? `RM${slide.actualPrice} / set` : 'Price on request'),
     { size: 18, bold: true, color: C.white, font: 'Montserrat' });
 
   tb(R, slideId, `pd_url_${index}`, rightX + M + TW * 0.55, H - 260000, TW * 0.45, 180000,
