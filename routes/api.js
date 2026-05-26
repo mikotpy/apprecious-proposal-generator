@@ -117,7 +117,7 @@ router.post('/generate', async (req, res) => {
     logLead(leadData, slidesUrl).catch(err => console.error('[api] Sheet log error:', err));
 
     console.log(`[api] Done! Slides URL: ${slidesUrl}`);
-    return res.json({ success: true, slidesUrl, productsCount: products.length });
+    return res.json({ success: true, slidesUrl, productsCount: allProducts.length });
 
   } catch (err) {
     console.error('[api] Generation error:', err);
