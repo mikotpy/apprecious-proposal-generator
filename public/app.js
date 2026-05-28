@@ -21,6 +21,7 @@ const SOCIAL_IMPACT_TIER  = { label: 'Social Impact Handmade Products', url: 'co
 function getMatchingTier(budget, type) {
   if (type === 'social-impact') return SOCIAL_IMPACT_TIER;
   if (type === 'batik-gift-set') return GIFT_SET_TIERS.find(t => budget <= t.max) || GIFT_SET_TIERS[GIFT_SET_TIERS.length - 1];
+  if (type === 'gadget') return MERCH_TIERS.find(t => budget <= t.max) || MERCH_TIERS[MERCH_TIERS.length - 1];
   const tiers = type === 'merch' ? MERCH_TIERS : GIFT_SET_TIERS;
   return tiers.find(t => budget <= t.max) || tiers[tiers.length - 1];
 }
