@@ -39,6 +39,15 @@ router.post('/generate', async (req, res) => {
     return res.status(400).json({ error: `Missing required fields: ${missing.join(', ')}` });
   }
 
+  // ── Parse selected product types (multi-select checkboxes) ──
+  const productTypes = [];
+  if (req.body.pt_gift)   productTypes.push('gift-set');
+  if (req.body.pt_batik)  productTypes.push('batik-gift-set');
+  if (req.body.pt_social) productTypes.push('social-impact');
+  if (req.body.pt_merch)  productTypes.push('merch');
+  if (req.body.pt_gadget) productTypes.push('gadget');
+  if (productTypes.length === 0) productTypes.push('gift-set'); // fallback
+
   const leadData = {
     clientName:       String(req.body.clientName).trim(),
     company:          String(req.body.company).trim(),
@@ -48,7 +57,8 @@ router.post('/generate', async (req, res) => {
     quantity:         parseInt(req.body.quantity, 10),
     deliveryDeadline: String(req.body.deliveryDeadline).trim(),
     clientBrief:      String(req.body.clientBrief || '').trim(),
-    productType:      req.body.productType || 'gift-set',
+    productType:      productTypes[0], // primary type for AI context
+    productTypes,                      // all selected types
   };
 
   // ── Slide customisation options ────────────────────────────
@@ -71,14 +81,27 @@ router.post('/generate', async (req, res) => {
   }
 
   console.log(`[api] Generating proposal for ${leadData.company} (${leadData.clientName}) — RM${leadData.budgetPerSet}/set × ${leadData.quantity}`);
-  console.log(`[api] Occasions: ${occList.join(', ')} | Website slides: ${websiteSlideCount} | Custom slides: ${customSlideCount}`);
+  console.log(`[api] Types: ${productTypes.join('+')} | Occasions: ${occList.join(', ')} | Website: ${websiteSlideCount} | Custom: ${customSlideCount}`);
 
   try {
-    // Step 1 — Fetch matching products from Apprecious
+    // Step 1 — Fetch products across all selected types (interleaved)
     console.log('[api] Step 1/3: Fetching products from apprecious.com.my...');
-    const websiteProducts = websiteSlideCount > 0
-      ? await fetchProducts(leadData.budgetPerSet, leadData.productType, websiteSlideCount)
-      : [];
+    let websiteProducts = [];
+    if (websiteSlideCount > 0) {
+      const perType = Math.ceil(websiteSlideCount / productTypes.length);
+      const results = await Promise.all(
+        productTypes.map(type => fetchProducts(leadData.budgetPerSet, type, perType))
+      );
+      // Interleave so categories alternate across slides
+      const maxLen = Math.max(...results.map(r => r.length));
+      for (let i = 0; i < maxLen && websiteProducts.length < websiteSlideCount; i++) {
+        for (const result of results) {
+          if (i < result.length && websiteProducts.length < websiteSlideCount) {
+            websiteProducts.push(result[i]);
+          }
+        }
+      }
+    }
 
     if (websiteProducts.length === 0 && customSlideCount === 0) {
       return res.status(502).json({ error: 'No products found for this budget range. Add custom slides or try a different budget.' });

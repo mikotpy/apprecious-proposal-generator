@@ -375,7 +375,7 @@ function buildImpact(slideId, obj) {
 }
 
 // ── SLIDES 4–10: Product slides ───────────────────────────────
-function buildProductSlide(slideId, slide, index) {
+function buildProductSlide(slideId, slide, index, lead = {}) {
   const R = [];
   const half = W / 2;
 
@@ -420,67 +420,66 @@ function buildProductSlide(slideId, slide, index) {
   R.push(rect(slideId, rHdr, rightX, 0, half, 730000));
   R.push(fillRect(rHdr, C.blue));
 
-  tb(R, slideId, `pd_rh_${index}`, rightX + M, 60000, TW, 380000,
-    slide.headline || slide.subheadline || 'Product highlight',
-    { size: 13, bold: true, color: C.white, font: 'Montserrat' });
+  // Company name + headline (e.g. "CARSOME Heritage Basket")
+  const companyPrefix = lead.company ? `${lead.company.toUpperCase()} ` : '';
+  const headline = `${companyPrefix}${slide.headline || slide.subheadline || 'Product Highlight'}`;
+  tb(R, slideId, `pd_rh_${index}`, rightX + M, 50000, TW, 420000,
+    headline,
+    { size: 12, bold: true, color: C.white, font: 'Montserrat' });
 
-  tb(R, slideId, `pd_rs_${index}`, rightX + M, 460000, TW, 220000,
+  tb(R, slideId, `pd_rs_${index}`, rightX + M, 490000, TW, 200000,
     slide.subheadline || '',
-    { size: 8, italic: true, color: { red: 1, green: 1, blue: 1 } });
+    { size: 7.5, italic: true, color: { red: 1, green: 1, blue: 1 } });
 
-  let curY = 820000;
+  // ── Fixed-position right panel layout ────────────────────────────
+  // Total available: y=730000 (after header) to y=4803500 (before footer)
+  // Sections at fixed Y positions so they never overlap
   const lblColor = C.blue;
-  const GAP = 100000;   // space between sections
+  const SECTION_LBL_H = 140000;
+  const DIVIDER_H     = 8000;
 
-  // ── Section: Product Materials (label + blank space, no grey box) ──
-  tb(R, slideId, `pd_mat_lbl_${index}`, rightX + M, curY, TW, 130000,
+  // ── PRODUCT MATERIALS (y=820000) ─────────────────────────────────
+  tb(R, slideId, `pd_mat_lbl_${index}`, rightX + M, 820000, TW, SECTION_LBL_H,
     'PRODUCT MATERIALS', { size: 6.5, bold: true, color: lblColor });
-  curY += 350000;  // label + generous blank writing space
+  // Blank write space: 720000 below label
 
-  // Divider
   const div1 = uid(`pd_div1_${index}`);
-  R.push(rect(slideId, div1, rightX + M, curY, TW, 8000));
+  R.push(rect(slideId, div1, rightX + M, 1680000, TW, DIVIDER_H));
   R.push(fillRect(div1, C.lightBorder));
-  curY += GAP;
 
-  // ── Section: Gift Set Includes ────────────────────────────────────
-  tb(R, slideId, `pd_gi_lbl_${index}`, rightX + M, curY, TW, 130000,
-    'GIFT SET INCLUDES', { size: 6.5, bold: true, color: lblColor });
-  curY += 160000;
+  // ── GIFT SET INCLUDES (y=1740000) ────────────────────────────────
+  tb(R, slideId, `pd_gi_lbl_${index}`, rightX + M, 1740000, TW, SECTION_LBL_H,
+    'WHAT\'S IN THE GIFT SET', { size: 6.5, bold: true, color: lblColor });
 
-  const items = (slide.giftSetItems || []).slice(0, 8);
-  const colH = 140000;
-  const half2 = TW / 2;
+  const items  = (slide.giftSetItems || []).slice(0, 8);
+  const colH   = 150000;
+  const half2  = TW / 2;
   items.forEach((item, ii) => {
     const col = ii % 2;
     const row = Math.floor(ii / 2);
-    const ix = rightX + M + col * half2;
-    const iy = curY + row * colH;
-    tb(R, slideId, `pd_item_${index}_${ii}`, ix, iy, half2 - 20000, colH,
+    tb(R, slideId, `pd_item_${index}_${ii}`,
+      rightX + M + col * half2, 1900000 + row * colH,
+      half2 - 20000, colH,
       `• ${item}`, { size: 7.5, color: C.subText });
   });
-  curY += Math.ceil(items.length / 2) * colH + GAP;
 
-  // Divider
   const div2 = uid(`pd_div2_${index}`);
-  R.push(rect(slideId, div2, rightX + M, curY, TW, 8000));
+  R.push(rect(slideId, div2, rightX + M, 2780000, TW, DIVIDER_H));
   R.push(fillRect(div2, C.lightBorder));
-  curY += GAP;
 
-  // ── Section: Impact Story Card (label + blank space, no grey box) ─
-  tb(R, slideId, `pd_imp_lbl_${index}`, rightX + M, curY, TW, 130000,
+  // ── IMPACT STORY CARD (y=2840000) ────────────────────────────────
+  tb(R, slideId, `pd_imp_lbl_${index}`, rightX + M, 2840000, TW, SECTION_LBL_H,
     'IMPACT STORY CARD', { size: 6.5, bold: true, color: lblColor });
-  curY += 320000;  // label + generous blank writing space
+  // Blank write space: 700000 below label
 
-  // Divider
   const div3 = uid(`pd_div3_${index}`);
-  R.push(rect(slideId, div3, rightX + M, curY, TW, 8000));
+  R.push(rect(slideId, div3, rightX + M, 3680000, TW, DIVIDER_H));
   R.push(fillRect(div3, C.lightBorder));
-  curY += GAP;
 
-  // ── Section: Brand Logo (label only, blank space beside) ─────────
-  tb(R, slideId, `pd_logo_lbl_${index}`, rightX + M, curY, TW, 130000,
-    'BRAND LOGO', { size: 6.5, bold: true, color: lblColor });
+  // ── BRAND LOGO (y=3740000) ───────────────────────────────────────
+  tb(R, slideId, `pd_logo_lbl_${index}`, rightX + M, 3740000, TW, SECTION_LBL_H,
+    'BRAND LOGO PRINT INCLUDED', { size: 6.5, bold: true, color: lblColor });
+  // Blank space: 400000 below for logo placeholder
 
   // ── Orange footer with price ────────────────────────────────
   const foot = uid(`pd_foot_${index}`);
@@ -552,7 +551,7 @@ async function createProposal(leadData, products, slideContent) {
   const productSlides = (slideContent.productSlides || []).slice(0, 7);
   productSlides.forEach((ps, i) => {
     if (slideIds[i + 3]) {
-      contentRequests.push(...buildProductSlide(slideIds[i + 3], ps, i));
+      contentRequests.push(...buildProductSlide(slideIds[i + 3], ps, i, leadData));
     }
   });
 

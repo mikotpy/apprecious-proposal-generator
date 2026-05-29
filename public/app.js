@@ -37,35 +37,40 @@ const slidesLink   = document.getElementById('slidesLink');
 const successSub   = document.getElementById('successSub');
 const errorMsg     = document.getElementById('errorMsg');
 
-// ── Radio product type ─────────────────────────────────────
-document.querySelectorAll('input[name="productType"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
-    radio.closest('.radio-option').classList.add('selected');
+// ── Checkbox product type (multi-select) ──────────────────
+const PT_NAMES = ['pt_gift','pt_batik','pt_social','pt_merch','pt_gadget'];
+
+document.querySelectorAll('input[name^="pt_"]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    // Prevent deselecting the last checked option
+    const anyChecked = PT_NAMES.some(n => document.querySelector(`input[name="${n}"]`)?.checked);
+    if (!anyChecked) { cb.checked = true; return; }
+    cb.closest('.radio-option').classList.toggle('selected', cb.checked);
     updateBudgetPreview();
   });
 });
 
 // ── Budget preview chip ────────────────────────────────────
+function getSelectedTypes() {
+  return PT_NAMES
+    .filter(n => document.querySelector(`input[name="${n}"]`)?.checked)
+    .map(n => ({ pt_gift:'gift-set', pt_batik:'batik-gift-set', pt_social:'social-impact', pt_merch:'merch', pt_gadget:'gadget' })[n]);
+}
+
 function updateBudgetPreview() {
   const budget   = parseFloat(document.getElementById('budgetPerSet').value);
   const quantity = parseInt(document.getElementById('quantity').value, 10);
-  const type     = document.querySelector('input[name="productType"]:checked')?.value || 'gift-set';
+  const types    = getSelectedTypes();
 
-  if (!budget || budget < 1) {
-    budgetPreview.textContent = '';
-    return;
-  }
+  if (!budget || budget < 1) { budgetPreview.textContent = ''; return; }
 
-  const tier  = getMatchingTier(budget, type);
+  const labels = types.map(type => {
+    const tier = getMatchingTier(budget, type);
+    return `<a href="https://www.apprecious.com.my/${tier.url}" target="_blank" rel="noopener" style="color:var(--brand-blue)">${tier.label} ↗</a>`;
+  });
+
   const total = budget && quantity ? ` · Total: RM${(budget * quantity).toLocaleString()}` : '';
-
-  budgetPreview.innerHTML = `
-    🗂 Products from: <strong>${tier.label}</strong>
-    &nbsp;·&nbsp;
-    <a href="https://www.apprecious.com.my/${tier.url}" target="_blank" rel="noopener" style="color:var(--green-dark);font-size:11px;">View collection ↗</a>
-    ${total ? `<span style="color:var(--text-sub)">${total}</span>` : ''}
-  `;
+  budgetPreview.innerHTML = `🗂 ${labels.join(' &nbsp;+&nbsp; ')}${total ? `<span style="color:var(--text-sub)">${total}</span>` : ''}`;
 }
 
 document.getElementById('budgetPerSet').addEventListener('input', updateBudgetPreview);
