@@ -451,17 +451,11 @@ function buildProductSlide(slideId, slide, index, lead = {}) {
   tb(R, slideId, `pd_gi_lbl_${index}`, rightX + M, 1740000, TW, SECTION_LBL_H,
     'WHAT\'S IN THE GIFT SET', { size: 6.5, bold: true, color: lblColor });
 
-  const items  = (slide.giftSetItems || []).slice(0, 8);
-  const colH   = 150000;
-  const half2  = TW / 2;
-  items.forEach((item, ii) => {
-    const col = ii % 2;
-    const row = Math.floor(ii / 2);
-    tb(R, slideId, `pd_item_${index}_${ii}`,
-      rightX + M + col * half2, 1900000 + row * colH,
-      half2 - 20000, colH,
-      `• ${item}`, { size: 7.5, color: C.subText });
-  });
+  // All items in one text box — prevents overlap when text is long
+  const items = (slide.giftSetItems || []).slice(0, 8);
+  const itemsText = items.map(item => `• ${item}`).join('\n');
+  tb(R, slideId, `pd_items_${index}`, rightX + M, 1900000, TW, 820000,
+    itemsText, { size: 7.5, color: C.subText });
 
   const div2 = uid(`pd_div2_${index}`);
   R.push(rect(slideId, div2, rightX + M, 2780000, TW, DIVIDER_H));

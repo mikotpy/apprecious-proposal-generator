@@ -87,7 +87,7 @@ ${productsContext}
   "productSlides": [
     {
       "productIndex": 0,
-      "headline": "Punchy product headline max 7 words (sell the feeling)",
+      "headline": "Write as: [product purpose/feel] for [the specific occasion from careProgrammeSlide that best fits this product]. Max 8 words. Examples: 'Heritage Sets for Hari Raya Aidiladha 2026', 'Leadership Gifts for Q4 Awards Dinner', 'VIP Gifts for Annual Gala Night'. Match the occasion to the product type and the client's industry.",
       "subheadline": "Exact product name from Apprecious",
       "price": "RM XX / set",
       "occasionTag": "Best occasion fit e.g. 'Staff Appreciation · Festive'",
